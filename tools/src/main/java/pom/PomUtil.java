@@ -14,9 +14,9 @@ import org.dom4j.io.SAXReader;
 import util.CollectionUtils;
 
 /**
- * 查找没有被引用的SQLmap文件
+ * 抽取二方库工具类，用于生成新的二方库pom文件
  * @author : gangpeng.wgp
- * @time: 17/11/29
+ * @time: 18/1/6
  */
 public class PomUtil {
 
@@ -24,11 +24,11 @@ public class PomUtil {
 
 
     public static void main(String[] args) throws IOException {
-        //String allPomPath = "/Users/weigangpeng/IdeaProjects/webtest/pom.xml";
-        //String modulePomPath = "/Users/weigangpeng/IdeaProjects/webtest/tools/pom.xml";
+        //String allPomPath = "/Users/weigangpeng/IdeaProjects/wgptools/pom.xml";
+        //String modulePomPath = "/Users/weigangpeng/IdeaProjects/wgptools/tools/pom.xml";
 
         String allPomPath = "/Users/weigangpeng/IdeaProjects/aegean_home/shixi/pom.xml";
-        String modulePomPath = "/Users/weigangpeng/IdeaProjects/aegean_home/shixi/biz/leads/pom.xml";
+        String modulePomPath = "/Users/weigangpeng/IdeaProjects/aegean_home/shixi/biz/activity/pom.xml";
 
         process(allPomPath, modulePomPath);
     }

@@ -14,10 +14,9 @@ import util.StringUtil;
 import static util.StringUtil.getTab;
 
 /**
- * 文件转换工具
- * 把.vm后缀的xml文件批量转换为xml文件, 并替换autoconfig的占位符${xxx_xxx_xxx}为标准的占位符${xxx.xxx.xxx}
+ * 生成新的auto-config.xml，
  * @author : gangpeng.wgp
- * @time: 17/9/17
+ * @time: 18/1/6
  */
 public class AutoconfigMainUtil {
 
@@ -29,10 +28,10 @@ public class AutoconfigMainUtil {
 
     public static void main(String[] args) throws IOException {
 
-        AutoconfigMainUtil.convert("/Users/weigangpeng/IdeaProjects/aegean_home/shixi/bundle/war/src/webroot/META-INF/autoconf/auto-config.xml", "/Users/weigangpeng/IdeaProjects/aegean_home/shixi/bundle/war/src/webroot/META-INF/autoconf/auto-config.xml");
+        AutoconfigMainUtil.convert("/Users/weigangpeng/IdeaProjects/aegean_home/shixi/bundle/war/src/webroot/META-INF/autoconf/auto-config.xml",
+            "/Users/weigangpeng/IdeaProjects/aegean_home/shixi/bundle/war/src/webroot/META-INF/autoconf/auto-config.xml");
 
     }
-
 
     /**
      * 单个文件转换
