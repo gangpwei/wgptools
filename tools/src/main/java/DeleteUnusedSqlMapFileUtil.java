@@ -21,53 +21,58 @@ public class DeleteUnusedSqlMapFileUtil {
     /**
      * SQLMAP 根目录
      */
-    //static String SQLMAP_BASE = "/Users/weigangpeng/IdeaProjects/aegean_home/shixi/bundle/war/src/java/sqlmap/";
+    //static String sqlMapBase = "/Users/weigangpeng/IdeaProjects/aegean_home/shixi/bundle/war/src/java/sqlmap/";
 
-    static String SQLMAP_CONFIG = "/Users/weigangpeng/IdeaProjects/aegean_home/shixi/bundle/war/src/java/";
+    //static String warSrcPath = "/Users/weigangpeng/IdeaProjects/aegean_home/shixi/bundle/war/src/java/";
 
-    static String SQLMAP_BASE = SQLMAP_CONFIG + "sqlmap/";
+    //static String SQLMAP_BASE = warSrcPath + "sqlmap/";
 
     static List<File> unusedfileList = new ArrayList<>();
 
     static Set<File> usedFileSet = null;
 
     public static void main(String[] args) throws IOException {
+
+    }
+
+    /**
+     * 处理入口
+     * @param warSrcPath war目录
+     * @param sqlMapBase sqlmap目录
+     * @param fileArray 主sqlmap文件数组
+     * @param deleteFile 是否删除文件
+     */
+    public static void process(String warSrcPath, String sqlMapBase, String[] fileArray, boolean deleteFile) {
         try {
 
-            //SqlMapFileUtil.parserXml("/Users/weigangpeng/IdeaProjects/aegean_home/shixi/bundle/war/src/java/sqlmap-config.xml");
+            usedFileSet = getUsedFileList(warSrcPath, sqlMapBase, fileArray);
 
-            //usedFileSet = getUsedFileList(new String[] {"sqlmap-config.xml", "sqlmap-config-citypartner.xml", "sqlmap-config-leads.xml", "sqlmap-config-message.xml", "sqlmap-config-muses.xml", "sqlmap-config-mysql-aegean.xml", "sqlmap-config-zeus.xml"});
-
-            SQLMAP_CONFIG = "/Users/weigangpeng/IdeaProjects/martini_20160823_808046_openarea_1/bundle/war/src/java/";
-
-            SQLMAP_BASE = SQLMAP_CONFIG + "sqlmap/";
-            usedFileSet = getUsedFileList(new String[] {"sqlmap-addition-config", "sqlmap-config.xml", "sqlmap-mysql-config.xml"});
-
-            batchConvert(SQLMAP_BASE);
+            batchConvert(sqlMapBase);
 
             System.out.println("\n没用文件总数:" + unusedfileList.size() + "\n");
             for (File file : unusedfileList) {
 
                 System.out.println("删除文件:" + file.getAbsolutePath());
-                //file.deleteOnExit();
+                if(deleteFile){
+                    file.deleteOnExit();
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
-    public static Set<File> getUsedFileList(String[] fileArray){
+    public static Set<File> getUsedFileList(String warSrcPath, String sqlMapBase, String[] fileArray){
         Set<File> result = new HashSet<>();
         for (String s : fileArray) {
-            List<File> list = DeleteUnusedSqlMapFileUtil.parserXml(SQLMAP_CONFIG + s);
+            List<File> list = DeleteUnusedSqlMapFileUtil.parserXml(sqlMapBase,warSrcPath + s);
             result.addAll(list);
         }
 
         return result;
     }
 
-    public static List<File> parserXml(String fileName) {
+    public static List<File> parserXml(String sqlMapBase, String fileName) {
         List<File> result = new ArrayList<>();
         File inputXml = new File(fileName);
         SAXReader saxReader = new SAXReader();
@@ -84,7 +89,7 @@ public class DeleteUnusedSqlMapFileUtil {
 
                     line = line.substring("${baseurl}/sqlmap/".length(), line.length());
                     String xmlFileName = line.substring(0, line.length());
-                    xmlFileName = SQLMAP_BASE + xmlFileName;
+                    xmlFileName = sqlMapBase + xmlFileName;
                     //System.out.println(xmlFileName);
                     File file = new File(xmlFileName);
                     if(!file.exists()){
