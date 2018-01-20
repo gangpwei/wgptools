@@ -12,14 +12,13 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 
-import com.alibaba.dubbo.common.utils.CollectionUtils;
 
-import com.ali.caesar.platform.common.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.PropertyValue;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
 import org.springframework.beans.factory.config.TypedStringValue;
+import util.CollectionUtils;
 
 /**
  * @author weigangpeng

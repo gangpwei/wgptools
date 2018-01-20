@@ -53,35 +53,60 @@ public class JarUtil {
         Jar jar = new Jar();
         jar.setFileName(jarName);
 
-        String name = getFormattedJarName(jarName);
+        String name = getFormattedJarName(jarName).replaceAll(".jar", "");
 
         String[] arr = name.split("-");
         int x =0;
+        //版本号位置
         int y = 0;
+        //第一遍取版本号
         for (int i = 0; i< arr.length;i ++) {
             String item = arr[i];
             if(StringUtil.isEmpty(item)){
                 continue;
             }
-            if(StringUtil.appearNumber(item, ".") >= 2 && hasVersion(item)) {
-
+            if( hasVersion(item)) {
                 y = i;
                 break;
             }
             x += item.length();
         }
 
-        if(x > 0){
+        //如果版本号取不到，就再来一遍，“-“ 后面第一个字符为数字就认为是版本号
+        if(y == 0){
+            x =0;
+            for (int i = 0; i< arr.length;i ++) {
+                String item = arr[i];
+                if(StringUtil.isEmpty(item)){
+                    continue;
+                }
+                if(StringUtil.isNumeric(String.valueOf(item.charAt(0)))) {
+                    y = i;
+                    break;
+                }
+                x += item.length();
+            }
+        }
+
+        if(x > 0 && y > 0){
             jar.setArtifactId(name.substring(0, x + y -1));
             jar.setVersion(name.substring(x + y, name.length()));
+        }else if(x > 0 && y == 0){
+            jar.setArtifactId(name);
         }else{
             jar.setArtifactId(name);
         }
         return jar;
     }
 
+    /**
+     * 判断字符串中是否有版本信息
+     * 判断规则：字符串中有“.”，并且有至少2个数字
+     * @param str
+     * @return
+     */
     public static boolean hasVersion(final String str) {
-        if(StringUtil.appearNumber(str, ".") < 2){
+        if(StringUtil.appearNumber(str, ".") < 1){
             return false;
         }
 

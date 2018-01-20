@@ -12,11 +12,11 @@ import org.dom4j.io.SAXReader;
 import util.StringUtil;
 
 /**
- * 查找没有被引用的SQLmap文件
+ * 删除没有被引用的SQLmap文件
  * @author : gangpeng.wgp
  * @time: 17/11/29
  */
-public class SqlMapFileUtil {
+public class DeleteUnusedSqlMapFileUtil {
 
     /**
      * SQLMAP 根目录
@@ -60,7 +60,7 @@ public class SqlMapFileUtil {
     public static Set<File> getUsedFileList(String[] fileArray){
         Set<File> result = new HashSet<>();
         for (String s : fileArray) {
-            List<File> list = SqlMapFileUtil.parserXml(SQLMAP_CONFIG + s);
+            List<File> list = DeleteUnusedSqlMapFileUtil.parserXml(SQLMAP_CONFIG + s);
             result.addAll(list);
         }
 

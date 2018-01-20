@@ -16,6 +16,12 @@ public class JarUtilTest {
 
     @Test
     public void getJarFromJarName() throws Exception {
+        //System.out.println(JarUtil.getJarFormJarName("tomcat-juli.jar"));
+
+        //System.out.println(JarUtil.getJarFormJarName("aegean.common-1.0-20171222.033446-8.jar"));
+
+        System.out.println(JarUtil.getJarFormJarName("fastjson-999-not-exist.jar"));
+
 
     }
 

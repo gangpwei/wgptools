@@ -1,11 +1,8 @@
 package jar;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
-import util.CollectionUtils;
-import util.ShellUtil;
 
 /**
  * @author weigangpeng
@@ -13,48 +10,55 @@ import util.ShellUtil;
  */
 
 public class JarAddExcludeUtilTest {
+
     @Test
-    public void generateNewPom() throws Exception {
+    public void processForAegean() throws Exception {
 
-        String command = "cd /Users/weigangpeng/IdeaProjects/muses_new/banner/";
+        String codePath = "/Users/weigangpeng/IdeaProjects/aegean_home/shixi/";
+        String warPath = "/bundle/war/target/aegean.war";
+        //String usedJarFile = "/Users/weigangpeng/Documents/开发提效/aegean_jar.log";
+        String usedJarFile = "/Users/weigangpeng/Documents/开发提效/aegeanlog";
 
-        command += "&& mvn dependency:tree > ztemp/maventree.log";
-        ShellUtil.runShell(command);
+        JarAddExcludeUtil.process(codePath, warPath, usedJarFile);
+    }
 
-        List<String> unusedJars = JarAnlayzeUtil.getUnusedJarNames(
-            "/Users/weigangpeng/IdeaProjects/muses_new/banner/bundle/war/target/muses.war/WEB-INF/lib",
-            "/Users/weigangpeng/Documents/开发提效/muses_jar.log");
+    @Test
+    public void addDependencyForRemovedByMistakeJarForAegean() throws Exception {
+        JarAddExcludeUtil.addDependencyForRemovedByMistakeJar(
+            "/Users/weigangpeng/IdeaProjects/aegean_home/shixi/bundle/war/target/aegean.war/WEB-INF/lib",
+            "/Users/weigangpeng/Documents/开发提效/aegeanlog",
+            "/Users/weigangpeng/IdeaProjects/aegean_home/trunk/");
 
-        List<Jar> jars = JarTreeAnlayzeUtil.getJarDependencyTree("/Users/weigangpeng/IdeaProjects/muses_new/banner/ztemp/maventree.log");
+    }
 
-        JarTreeAnlayzeUtil.generateExcludePom(unusedJars, jars);
+    /**
+     * 还原删除的jar
+     * @throws Exception
+     */
+    @Test
+    public void addDependencyForRemovedByJarForAegean() throws Exception {
+        JarAddExcludeUtil.addDependencyForRemovedByMistakeJar(
+            "/Users/weigangpeng/IdeaProjects/aegean_home/shixi/bundle/war/target/aegean.war/WEB-INF/lib",
+            "/Users/weigangpeng/Documents/开发提效/aegean_oldjar",
+            "/Users/weigangpeng/IdeaProjects/aegean_home/trunk/");
 
+    }
 
-        List<Jar> excludeRootJars = new ArrayList<>();
-        for (Jar jar : jars) {
-            if(jar.getDependencyLevel() == 0){
-                if(CollectionUtils.isNotEmpty(jar.getChildren())){
-                    for (Jar level1Jar : jar.getChildren()) {
-                        if(CollectionUtils.isNotEmpty(level1Jar.getUnusedChildren())){
+    @Test
+    public void getRemovedJarsByMisstakeForAegean() throws Exception {
+        List<String> removedJarsByMisstake = JarAnlayzeUtil.getRemovedJarsByMisstake(
+            "/Users/weigangpeng/IdeaProjects/aegean_home/shixi/bundle/war/target/aegean.war/WEB-INF/lib",
+            "/Users/weigangpeng/Documents/开发提效/aegeanlog");
+    }
 
-                            if(!excludeRootJars.contains(level1Jar)){
-                                excludeRootJars.add(level1Jar);
-                            }else{
-                                Jar exsitRootJar = excludeRootJars.get(excludeRootJars.indexOf(level1Jar));
-                                for (Jar unsedJar : level1Jar.getUnusedChildren()) {
-                                    if(exsitRootJar.getUnusedChildren() != null && !exsitRootJar.getUnusedChildren().contains(unsedJar)){
-                                        exsitRootJar.getUnusedChildren().add(unsedJar);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
+    @Test
+    public void processForMuses() throws Exception {
 
+        String codePath = "/Users/weigangpeng/IdeaProjects/muses_new/banner/";
+        String warPath = "/bundle/war/target/muses.war";
+        String usedJarFile = "/Users/weigangpeng/Documents/开发提效/muses_jar.log";
 
-        JarAddExcludeUtil.generateNewPom("/Users/weigangpeng/IdeaProjects/muses_new/banner/pom.xml", excludeRootJars, "/Users/weigangpeng/IdeaProjects/muses_new/banner/pom2.xml");
+        JarAddExcludeUtil.process(codePath, warPath, usedJarFile);
     }
 
 }

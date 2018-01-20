@@ -12,6 +12,7 @@ import java.util.Map.Entry;
 
 import util.FileUtil;
 import util.StringUtil;
+import util.UnJar;
 
 /**
  * 找到应用中autoconfig中没用的配置项, 并生成一个新的auto-config.xml文件
@@ -42,7 +43,7 @@ public class FindUnsedAutoconfigUtil {
         String autoconfigFilePath = "/Users/weigangpeng/IdeaProjects/aegean_home/shixi/bundle/war/src/webroot/META-INF/autoconf/auto-config.xml";
         String antxPropertiesFilePath = "/Users/weigangpeng/IdeaProjects/aegean_home/shixi/ztemp/aegean.properties";
         String warPath = "/Users/weigangpeng/IdeaProjects/aegean_home/shixi/bundle/war/target/aegean.war";
-
+        warPath = "/Users/weigangpeng/libtemp/";
         process(autoconfigFilePath, antxPropertiesFilePath, warPath);
     }
 
@@ -57,6 +58,13 @@ public class FindUnsedAutoconfigUtil {
         //autoconfigMap = AutoconfigLoader.parserXml(autoconfigFilePath);
 
         autoconfigMap = AutoconfigLoader.getConfigFromPropertiesFile(antxPropertiesFilePath);
+//TODO
+    String temp = "/Users/weigangpeng/aegean_temp/";
+    UnJar.unJar(warPath, temp);
+    if(1==1){
+        return  ;
+    }
+
 
         //解压jar包
         //UnJar.unJar(warPath, getOutputPath(warPath));
@@ -133,7 +141,9 @@ public class FindUnsedAutoconfigUtil {
                 if (line.length() > 0) {
                     sb.append(line);
                 }
-
+                if(line != null && line.contains("service-servlet")){
+                    int x = 0;
+                }
             }
             bReader.close();
 
@@ -225,7 +235,11 @@ public class FindUnsedAutoconfigUtil {
         while ((line = bReader.readLine()) != null) {
             if (line.length() > 0) {
                 sb.append(line);
+                if(line != null && line.contains("service-servlet")){
+                    int x = 0;
+                }
             }
+
 
         }
 

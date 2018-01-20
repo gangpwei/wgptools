@@ -13,11 +13,21 @@ import util.DateUtil;
 
 public class JarAnlayzeUtilTest {
     @Test
-    public void getUnusedJars() throws Exception {
-        //List<Jar> unusedJars = JarAnlayzeUtil.getUnusedJars(
-        //    "/Users/weigangpeng/IdeaProjects/muses_new/banner/bundle/war/target/muses.war/WEB-INF/lib",
-        //    "/Users/weigangpeng/Documents/开发提效/muses_jar.log");
-        //
+    public void getUnusedJarsForAegean() throws Exception {
+        List<String> unusedJars = JarAnlayzeUtil.getUnusedJarNames(
+            "/Users/weigangpeng/IdeaProjects/aegean_home/shixi/bundle/war/target/aegean.war/WEB-INF/lib",
+            "/Users/weigangpeng/Documents/开发提效/aegean_jar.log");
+
+        //JarAnlayzeUtil.printUnUsedJarFile(unusedJars,
+        //    "/Users/weigangpeng/Documents/开发提效/mavntree.log");
+    }
+
+    @Test
+    public void getUnusedJarsForMuses() throws Exception {
+        List<String> unusedJars = JarAnlayzeUtil.getUnusedJarNames(
+            "/Users/weigangpeng/IdeaProjects/muses_new/banner/bundle/war/target/muses.war/WEB-INF/lib",
+            "/Users/weigangpeng/Documents/开发提效/muses_jar.log");
+
         //JarAnlayzeUtil.printUnUsedJarFile(unusedJars,
         //    "/Users/weigangpeng/Documents/开发提效/mavntree.log");
     }
@@ -29,6 +39,7 @@ public class JarAnlayzeUtilTest {
             "/Users/weigangpeng/Documents/开发提效/muses_jar.log");
 
     }
+
 
 
     @Test
