@@ -1,18 +1,14 @@
 package antx;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
-import util.FileUtil;
+import util.file.FileUtil;
 import util.StringUtil;
-import util.UnJar;
 
 /**
  * 找到应用中autoconfig中没用的配置项, 并生成一个新的auto-config.xml文件
@@ -43,7 +39,7 @@ public class FindUnsedAutoconfigUtil {
         String autoconfigFilePath = "/Users/weigangpeng/IdeaProjects/aegean_home/shixi/bundle/war/src/webroot/META-INF/autoconf/auto-config.xml";
         String antxPropertiesFilePath = "/Users/weigangpeng/IdeaProjects/aegean_home/shixi/ztemp/aegean.properties";
         String warPath = "/Users/weigangpeng/IdeaProjects/aegean_home/shixi/bundle/war/target/aegean.war";
-        warPath = "/Users/weigangpeng/libtemp/";
+        //warPath = "/Users/weigangpeng/libtemp/";
         process(autoconfigFilePath, antxPropertiesFilePath, warPath);
     }
 
@@ -58,13 +54,6 @@ public class FindUnsedAutoconfigUtil {
         //autoconfigMap = AutoconfigLoader.parserXml(autoconfigFilePath);
 
         autoconfigMap = AutoconfigLoader.getConfigFromPropertiesFile(antxPropertiesFilePath);
-//TODO
-    String temp = "/Users/weigangpeng/aegean_temp/";
-    UnJar.unJar(warPath, temp);
-    if(1==1){
-        return  ;
-    }
-
 
         //解压jar包
         //UnJar.unJar(warPath, getOutputPath(warPath));
@@ -129,23 +118,18 @@ public class FindUnsedAutoconfigUtil {
     }
 
     private static List<String> getDependencyByOtherKeyList(String propertiesFile) {
-        BufferedReader bReader = null;
         List<String> dependencyByOtherKeyList = new ArrayList<String>();
         try {
-            bReader = new BufferedReader(new InputStreamReader(new FileInputStream(propertiesFile), "UTF-8"));
-            String line;
-
             StringBuilder sb = new StringBuilder();
 
-            while ((line = bReader.readLine()) != null) {
+            //读取文件，每一行放入list中
+            List<String> lineList = FileUtil.readAllLines(propertiesFile);
+
+            for (String line : lineList) {
                 if (line.length() > 0) {
                     sb.append(line);
                 }
-                if(line != null && line.contains("service-servlet")){
-                    int x = 0;
-                }
             }
-            bReader.close();
 
             String allPropertiesStr = sb.toString();
             for (Entry<String, String> configMap : autoconfigMap.entrySet()) {
@@ -227,23 +211,15 @@ public class FindUnsedAutoconfigUtil {
             return;
         }
 
-        BufferedReader bReader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"));
-        String line;
-
         StringBuilder sb = new StringBuilder();
+        //读取文件，每一行放入list中
+        List<String> lineList = FileUtil.readAllLines(file.getAbsolutePath());
 
-        while ((line = bReader.readLine()) != null) {
+        for (String line : lineList) {
             if (line.length() > 0) {
                 sb.append(line);
-                if(line != null && line.contains("service-servlet")){
-                    int x = 0;
-                }
             }
-
-
         }
-
-        bReader.close();
 
         fileStrMap.put(file.getAbsolutePath(), sb.toString());
         //System.out.println("完成：" + file.getAbsolutePath());

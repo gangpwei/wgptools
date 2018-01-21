@@ -1,10 +1,6 @@
 package jar;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -16,9 +12,10 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.CollectionUtils;
-import util.FileUtil;
+import util.file.FileUtil;
 import util.StringUtil;
-import static util.StringUtil.*;
+
+import static util.StringUtil.formatLen;
 
 /**
  * @author weigangpeng
@@ -367,9 +364,10 @@ public class JarAnlayzeUtil {
     private static List<String> getUsedJarList(String logFile, String[] includePath) {
         List<String> usedJarFile = new ArrayList<>();
         try {
-            BufferedReader bReader = new BufferedReader(new InputStreamReader(new FileInputStream(logFile), "UTF-8"));
-            String line;
-            while ((line = bReader.readLine()) != null) {
+            //读取文件，每一行放入list中
+            List<String> lineList = FileUtil.readAllLines(logFile);
+
+            for (String line : lineList) {
                 if(line.length()>0){
                     line = line.trim();
                     if(!line.endsWith(".jar") || !isIncludeList(line, includePath)){
@@ -386,8 +384,7 @@ public class JarAnlayzeUtil {
                     }
                 }
             }
-            bReader.close();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return usedJarFile;
@@ -493,9 +490,10 @@ public class JarAnlayzeUtil {
     private static List<String> getUsedJarListInProject(String logFile) {
         List<String> usedJarFile = new ArrayList<>();
         try {
-            BufferedReader bReader = new BufferedReader(new InputStreamReader(new FileInputStream(logFile), "UTF-8"));
-            String line;
-            while ((line = bReader.readLine()) != null) {
+            //读取文件，每一行放入list中
+            List<String> lineList = FileUtil.readAllLines(logFile);
+
+            for (String line : lineList) {
                 if(line.length()>0){
                     if(!line.trim().endsWith(".jar") || !line.contains("/") || !line.contains("/WEB-INF/lib")){
                         continue;
@@ -507,8 +505,7 @@ public class JarAnlayzeUtil {
                     }
                 }
             }
-            bReader.close();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return usedJarFile;
@@ -516,9 +513,10 @@ public class JarAnlayzeUtil {
 
     public static void printUnUsedJarFile(List<Jar> unusedJarFile, String mvnTreeFile){
         try {
-            BufferedReader bReader = new BufferedReader(new InputStreamReader(new FileInputStream(mvnTreeFile), "UTF-8"));
-            String line;
-            while ((line = bReader.readLine()) != null) {
+            //读取文件，每一行放入list中
+            List<String> lineList = FileUtil.readAllLines(mvnTreeFile);
+
+            for (String line : lineList) {
                 if(line.length()>0){
                     if(!line.contains(":jar:")){
                         continue;
@@ -555,8 +553,7 @@ public class JarAnlayzeUtil {
                 }
 
             }
-            bReader.close();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

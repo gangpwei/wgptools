@@ -1,12 +1,10 @@
 package antx;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -18,6 +16,7 @@ import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
+import util.file.FileUtil;
 
 /**
  * autoconfig加载和生成工具
@@ -88,10 +87,6 @@ public class AutoconfigLoader {
     public static void getNewConfigFile(String path, List<String> unusedKeyList, boolean removeUnused) throws IOException {
         File file = new File(path);
 
-
-        BufferedReader bReader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"));
-        String line;
-
         File newFile = new File(file.getAbsolutePath().replace(".xml", "_new.xml"));
         File parentDir = new File(newFile.getParent());
         if(!parentDir.exists()){
@@ -100,7 +95,11 @@ public class AutoconfigLoader {
         BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(newFile), "UTF-8"));
 
         boolean containKey = false;
-        while ((line = bReader.readLine()) != null) {
+
+        //读取文件，每一行放入list中
+        List<String> lineList = FileUtil.readAllLines(path);
+
+        for (String line : lineList) {
             if(line.length()>0){
 
                 for (String key : unusedKeyList) {
@@ -126,9 +125,9 @@ public class AutoconfigLoader {
             out.write(line);
             out.newLine();
         }
+
         out.flush();
         out.close();
-        bReader.close();
 
         System.out.println("\n生成新的auto-config.xml：" + newFile.getAbsolutePath());
 

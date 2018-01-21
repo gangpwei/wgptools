@@ -1,17 +1,11 @@
 package antx;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.util.List;
 
-import jar.Jar;
-import util.CollectionUtils;
+import util.file.FileUtil;
 import util.StringUtil;
-
-import static util.StringUtil.getTab;
 
 /**
  * 生成新的auto-config.xml，
@@ -46,10 +40,11 @@ public class AutoconfigMainUtil {
 
             int lineNumber = 0;
             try {
-                BufferedReader bReader = new BufferedReader(new InputStreamReader(new FileInputStream(oldFile), "UTF-8"));
-                String line;
                 StringBuffer gernerateBuffer = null;
-                while ((line = bReader.readLine()) != null) {
+                //读取文件，每一行放入list中
+                List<String> lineList = FileUtil.readAllLines(oldFile);
+
+                for (String line : lineList) {
 
                     String tempLine = line;
                     lineNumber += 1;
@@ -112,7 +107,6 @@ public class AutoconfigMainUtil {
                     }
 
                 }
-                bReader.close();
 
                 newFileBuffer.deleteCharAt(newFileBuffer.lastIndexOf("\n"));
                 FileOutputStream out=new FileOutputStream(outputPath);

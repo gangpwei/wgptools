@@ -1,19 +1,16 @@
 package jar;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.omg.PortableServer.LIFESPAN_POLICY_ID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.CollectionUtils;
+import util.file.FileUtil;
 import util.StringUtil;
 
-import static util.StringUtil.*;
+import static util.StringUtil.formatLen;
+import static util.StringUtil.getTab;
 
 /**
  * jar包分析工具，用来生产去除没用的jar的pom配置
@@ -47,10 +44,11 @@ public class JarTreeAnlayzeUtil {
         List<Jar> result = new ArrayList<>();
         int lineNumber = 0;
         try {
-            BufferedReader bReader = new BufferedReader(new InputStreamReader(new FileInputStream(mvnTreeFile), "UTF-8"));
-            String line;
             Jar tempJar = null;
-            while ((line = bReader.readLine()) != null) {
+            //读取文件，每一行放入list中
+            List<String> lineList = FileUtil.readAllLines(mvnTreeFile);
+
+            for (String line : lineList) {
                 lineNumber += 1;
                 if (lineNumber == 411) {
                     int x = 0;
@@ -106,7 +104,6 @@ public class JarTreeAnlayzeUtil {
                     }
                 }
             }
-            bReader.close();
         } catch (Exception e) {
             log.error("解析maven tree日志失败，lineNumber:" + lineNumber, e);
         }

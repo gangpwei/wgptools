@@ -1,10 +1,6 @@
 package jar;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,6 +9,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.CollectionUtils;
+import util.file.FileUtil;
 import util.ShellUtil;
 import util.StringUtil;
 
@@ -158,14 +155,15 @@ public class JarAddExcludeUtil {
 
         int lineNumber = 0;
         try {
-            BufferedReader bReader = new BufferedReader(new InputStreamReader(new FileInputStream(pomPath), "UTF-8"));
-            String line;
             String blankStrBeforeArtifactId = null;
             boolean inExclude = false;
             StringBuffer excludePomListSb = null;
             StringBuffer beforeBuffer = null;
             ArrayList<String> jarStrList = null;
-            while ((line = bReader.readLine()) != null) {
+            //读取文件，每一行放入list中
+            List<String> lineList = FileUtil.readAllLines(pomPath);
+
+            for (String line : lineList) {
                 lineNumber += 1;
 
                 //是否被注释掉
@@ -296,7 +294,6 @@ public class JarAddExcludeUtil {
                     jar = null;
                 }
             }
-            bReader.close();
 
             newPomFileBuffer.deleteCharAt(newPomFileBuffer.lastIndexOf("\n"));
 

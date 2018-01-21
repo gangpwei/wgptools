@@ -1,18 +1,16 @@
 package dubbo;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import dubbo.model.ServiceConfig;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
-import dubbo.model.ServiceConfig;
+import util.file.FileUtil;
 
 /**
  * Dubbo服务端工具类
@@ -125,10 +123,9 @@ public class DubboProviderUtil {
         try {
             System.out.println("\n生成HSF配置文件:" + hsfXmlFile.getAbsolutePath());
             System.out.println(content);
-            BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(hsfXmlFile), "UTF-8"));
-            out.write(content);
-            out.flush();
-            out.close();
+
+            //写文件
+            FileUtil.writeFile(hsfXmlFile.getAbsolutePath(), content);
         } catch (Exception e) {
             e.printStackTrace();
         }

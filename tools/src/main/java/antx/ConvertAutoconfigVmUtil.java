@@ -1,14 +1,10 @@
 package antx;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 
+import util.file.FileLineReplacer;
+import util.file.FileUtil;
 import util.StringUtil;
 
 /**
@@ -21,8 +17,7 @@ public class ConvertAutoconfigVmUtil {
 
     public static void main(String[] args) throws IOException {
 
-        ConvertAutoconfigVmUtil.batchConvert("/Users/weigangpeng/IdeaProjects/aegean_home/shixi/bundle/war/src/webroot/META-INF/autoconf/", "/Users/weigangpeng/IdeaProjects/aegean_home/shixi/bundle/war/src/webroot/META-INF/autoconf2/");
-
+        ConvertAutoconfigVmUtil.batchConvert("/Users/weigangpeng/IdeaProjects/omega/bundle/war/src/webroot/META-INF/autoconf/", "/Users/weigangpeng/IdeaProjects/omega/bundle/war/src/webroot/META-INF/autoconf2/");
     }
 
     /**
@@ -72,34 +67,56 @@ public class ConvertAutoconfigVmUtil {
             return;
         }
 
-        BufferedReader bReader = new BufferedReader(new InputStreamReader(new FileInputStream(oldFile), "UTF-8"));
-        String line;
 
         File newFile = new File(oldFile.getAbsolutePath().replace(rootPath, outputPath).replace(".vm", ""));
         File parentDir = new File(newFile.getParent());
         if(!parentDir.exists()){
             parentDir.mkdirs();
         }
-        BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(newFile), "UTF-8"));
 
-        while ((line = bReader.readLine()) != null) {
-            if(line.length()>0){
-                if(line.trim().startsWith("##")){
-                    continue;
-                }
-                if(line.contains("${") && line.indexOf("}") > 0){
-                    String token = line.substring(line.indexOf("${") + 2, line.indexOf("}"));
-                    //System.out.println(token);
-                    String tokenFormat = token.replaceAll("_", ".");
-                    line = line.replace(token, tokenFormat);
-                }
+
+        //BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(newFile), "UTF-8"));
+        //
+        ////读取文件，每一行放入list中
+        //List<String> lineList = FileUtil.readAllLines(oldFile.getAbsolutePath());
+        //
+        //for (String line : lineList) {
+        //    if(line.length()>0){
+        //        if(line.trim().startsWith("##")){
+        //            continue;
+        //        }
+        //        if(line.contains("${") && line.indexOf("}") > 0){
+        //            String token = line.substring(line.indexOf("${") + 2, line.indexOf("}"));
+        //            //System.out.println(token);
+        //            String tokenFormat = token.replaceAll("_", ".");
+        //            line = line.replace(token, tokenFormat);
+        //        }
+        //    }
+        //    out.write(line);
+        //    out.newLine();
+        //}
+        //out.flush();
+        //out.close();
+
+        FileLineReplacer filter = line -> {
+            if(line.length()<=0){
+                return "";
             }
-            out.write(line);
-            out.newLine();
-        }
-        out.flush();
-        out.close();
-        bReader.close();
+
+            if(line.trim().startsWith("##") && !line.trim().startsWith("####")){
+                return null;
+            }
+
+            if(line.contains("${") && line.indexOf("}") > 0){
+                String token = line.substring(line.indexOf("${") + 2, line.indexOf("}"));
+                //System.out.println(token);
+                String tokenFormat = token.replaceAll("_", ".");
+                line = line.replace(token, tokenFormat);
+            }
+            return line;
+        };
+
+        FileUtil.copyFile(oldFile.getAbsolutePath(), newFile.getAbsolutePath(), filter);
 
         //String oldFileName = oldFile.getName();
         //oldFile.delete();

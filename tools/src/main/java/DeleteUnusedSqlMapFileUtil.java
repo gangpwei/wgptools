@@ -18,22 +18,11 @@ import util.StringUtil;
  */
 public class DeleteUnusedSqlMapFileUtil {
 
-    /**
-     * SQLMAP 根目录
-     */
-    //static String sqlMapBase = "/Users/weigangpeng/IdeaProjects/aegean_home/shixi/bundle/war/src/java/sqlmap/";
-
-    //static String warSrcPath = "/Users/weigangpeng/IdeaProjects/aegean_home/shixi/bundle/war/src/java/";
-
-    //static String SQLMAP_BASE = warSrcPath + "sqlmap/";
 
     static List<File> unusedfileList = new ArrayList<>();
 
     static Set<File> usedFileSet = null;
 
-    public static void main(String[] args) throws IOException {
-
-    }
 
     /**
      * 处理入口
