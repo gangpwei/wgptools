@@ -18,7 +18,6 @@ import util.file.FileUtil;
  * @time: 17/9/17
  */
 public class DubboProviderUtil {
-    public static final String WARP = "\n";
 
 
 
@@ -47,7 +46,7 @@ public class DubboProviderUtil {
             //    System.out.println("       "  + serviceConfig);
             //}
 
-            generateHsfXmlFile(filePath, list);
+            HsfUtil.generateHsfXmlFile(getHsfFileName( filePath), list);
         }
 
         return result;
@@ -94,45 +93,6 @@ public class DubboProviderUtil {
     }
 
 
-    /**
-     * 将xml配置转为字符串
-     * @param filePath
-     * @param list
-     * @return
-     */
-    private static String generateHsfXmlFile(String filePath, List<ServiceConfig> list) {
-
-        StringBuilder sb = new StringBuilder();
-        String header = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            + "<beans default-autowire=\"byName\"\n"
-            + "\txmlns=\"http://www.springframework.org/schema/beans\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-            + "\txmlns:aop=\"http://www.springframework.org/schema/aop\" xmlns:context=\"http://www.springframework.org/schema/context\"\n"
-            + "\txsi:schemaLocation=\"http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd\n"
-            + "\thttp://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd\n"
-            + "\thttp://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd\">";
-
-        sb.append(header);
-        for (ServiceConfig serviceConfig : list) {
-            sb.append(beanItemToXmlString(serviceConfig));
-        }
-        sb.append("</beans>");
-
-        File hsfXmlFile = new File(getHsfFileName(filePath));
-
-        String content = sb.toString();
-        try {
-            System.out.println("\n生成HSF配置文件:" + hsfXmlFile.getAbsolutePath());
-            System.out.println(content);
-
-            //写文件
-            FileUtil.writeFile(hsfXmlFile.getAbsolutePath(), content);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return content;
-    }
-
     public static String getHsfFileName(String filePath) {
         if(filePath.contains("util/dubbo")){
             return filePath.replaceAll("dubbo", "hsf");
@@ -140,26 +100,6 @@ public class DubboProviderUtil {
         return filePath.replaceAll(".xml", "-hsf.xml");
     }
 
-    public static String beanItemToXmlString(ServiceConfig config){
-        StringBuilder sb = new StringBuilder();
-        sb.append(WARP).append("    <bean class=\"com.taobao.hsf.app.spring.util.HSFSpringProviderBean\" init-method=\"init\">");
-        sb.append(WARP).append("        <property name=\"serviceInterface\" value=\"").append(config.getInterfaceName()).append("\" />");
-        sb.append(WARP).append("        <property name=\"serviceVersion\" value=\"").append(getConfigValue(config.getVersion())).append("\" />");
-        sb.append(WARP).append("        <property name=\"target\" ref=\"").append(getConfigValue(config.getTarget())).append("\" />");
-        sb.append(WARP).append("        <property name=\"serviceGroup\" value=\"DUBBO\" />");
-        if(config.getTimeout() != null){
-            sb.append(WARP).append("        <property name=\"clientTimeout\" value=\"").append(getConfigValue(config.getTimeout())).append("\" />");
-        }
-        sb.append(WARP).append("    </bean>");
-        sb.append(WARP);
-        return sb.toString();
-    }
 
-    public static String getConfigValue(String source){
-        if(source.contains("_")){
-            return "${" + source + "}";
-        }
-        return source;
-    }
 
 }

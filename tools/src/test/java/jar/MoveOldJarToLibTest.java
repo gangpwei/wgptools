@@ -98,7 +98,7 @@ public class MoveOldJarToLibTest {
 
             x++;
             //System.out.println(jarName);
-            copyToLib(jar2.getFileName(), newCodeHome, oldCodePath, libPath  );
+            //copyToLib(jar2.getFileName(), newCodeHome, oldCodePath, libPath  );
         }
     }
 
@@ -140,7 +140,7 @@ public class MoveOldJarToLibTest {
 
             x++;
             //System.out.println(jarName);
-            copyToLib(jar.getFileName(), newCodeHome, oldCodePath, libPath  );
+            //copyToLib(jar.getFileName(), newCodeHome, oldCodePath, libPath  );
         }
     }
 

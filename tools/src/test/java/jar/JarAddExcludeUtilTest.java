@@ -31,6 +31,15 @@ public class JarAddExcludeUtilTest {
 
     }
 
+    @Test
+    public void addDependencyForRemovedByMistakeJarForOmega() throws Exception {
+        JarAddExcludeUtil.addDependencyForRemovedByMistakeJar(
+            "/Users/weigangpeng/IdeaProjects/omega/bundle/war/target/omega.war/WEB-INF/lib",
+            "/Users/weigangpeng/Documents/开发提效/omega_oldjar",
+            "/Users/weigangpeng/IdeaProjects/omega/");
+
+    }
+
     /**
      * 还原删除的jar
      * @throws Exception

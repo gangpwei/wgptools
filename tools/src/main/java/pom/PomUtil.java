@@ -28,7 +28,7 @@ public class PomUtil {
         //String modulePomPath = "/Users/weigangpeng/IdeaProjects/wgptools/tools/pom.xml";
 
         String allPomPath = "/Users/weigangpeng/IdeaProjects/aegean_home/shixi/pom.xml";
-        String modulePomPath = "/Users/weigangpeng/IdeaProjects/aegean_home/shixi/biz/activity/pom.xml";
+        String modulePomPath = "/Users/weigangpeng/IdeaProjects/aegean_home/shixi/commontest/pom.xml";
 
         process(allPomPath, modulePomPath);
     }

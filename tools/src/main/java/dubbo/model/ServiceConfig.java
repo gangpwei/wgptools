@@ -4,6 +4,7 @@ public class ServiceConfig {
     private String interfaceName;
     private String version;
     private String timeout;
+    private String group;
     private String target;
 
     public String getInterfaceName() {
@@ -34,6 +35,17 @@ public class ServiceConfig {
         return target;
     }
 
+    public String getGroup() {
+        if(group == null){
+            group = "DUBBO";
+        }
+        return group;
+    }
+
+    public void setGroup(String group) {
+        this.group = group;
+    }
+
     public void setTarget(String target) {
         this.target = target;
     }
@@ -49,5 +61,40 @@ public class ServiceConfig {
         }
         return result;
 
+    }
+
+    public ServiceConfig() {
+    }
+
+    public ServiceConfig(String interfaceName, String version, String timeout, String group, String target) {
+        this.interfaceName = interfaceName;
+        this.version = version;
+        this.timeout = timeout;
+        this.group = group;
+        this.target = target;
+    }
+
+    public static final String WARP = "\n";
+
+    public  String toXmlString(){
+        StringBuilder sb = new StringBuilder();
+        sb.append(WARP).append("    <bean class=\"com.taobao.hsf.app.spring.util.HSFSpringProviderBean\" init-method=\"init\">");
+        sb.append(WARP).append("        <property name=\"serviceInterface\" value=\"").append(getInterfaceName()).append("\" />");
+        sb.append(WARP).append("        <property name=\"serviceVersion\" value=\"").append(getConfigValue(getVersion())).append("\" />");
+        sb.append(WARP).append("        <property name=\"target\" ref=\"").append(getConfigValue(getTarget())).append("\" />");
+        sb.append(WARP).append("        <property name=\"serviceGroup\" value=\"").append(getConfigValue(getGroup())).append("\" />");
+        if(getTimeout() != null){
+            sb.append(WARP).append("        <property name=\"clientTimeout\" value=\"").append(getConfigValue(getTimeout())).append("\" />");
+        }
+        sb.append(WARP).append("    </bean>");
+        sb.append(WARP);
+        return sb.toString();
+    }
+
+    public static String getConfigValue(String source){
+        if(source.contains("_")){
+            return "${" + source + "}";
+        }
+        return source;
     }
 }
