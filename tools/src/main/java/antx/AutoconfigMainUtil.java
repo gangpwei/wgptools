@@ -20,20 +20,31 @@ public class AutoconfigMainUtil {
 
     public static final String FIELD_CHARSET = "charset";
 
+    /**
+     * 是否先预览，设置true: 生成后的文件不直接替换原文件, 用于文件比对
+     */
+    public static boolean preview = true;
+
     public static void main(String[] args) throws IOException {
 
-        AutoconfigMainUtil.convert("/Users/weigangpeng/IdeaProjects/aegean_home/shixi/bundle/war/src/webroot/META-INF/autoconf/auto-config.xml",
-            "/Users/weigangpeng/IdeaProjects/aegean_home/shixi/bundle/war/src/webroot/META-INF/autoconf/auto-config.xml");
+        preview = true;
 
+        AutoconfigMainUtil.convert(
+            "/Users/weigangpeng/IdeaProjects/omega/bundle/war/src/webroot/META-INF/autoconf_bak/auto-config.xml");
     }
 
     /**
      * 单个文件转换
-     * @param oldFile
-     * @param outputPath
+     * @param autoconfigFile
      * @throws IOException
      */
-    public static void convert(String oldFile, String outputPath) throws IOException {
+    public static void convert(String autoconfigFile) throws IOException {
+        String outputPath;
+        if(preview){
+            outputPath = autoconfigFile.replace(".xml", "_new.xml");
+        }else{
+            outputPath = autoconfigFile;
+        }
             StringBuffer newFileBuffer = new StringBuffer();
 
             GenerateConf generateConf = null;
@@ -42,7 +53,7 @@ public class AutoconfigMainUtil {
             try {
                 StringBuffer gernerateBuffer = null;
                 //读取文件，每一行放入list中
-                List<String> lineList = FileUtil.readAllLines(oldFile);
+                List<String> lineList = FileUtil.readAllLines(autoconfigFile);
 
                 for (String line : lineList) {
 

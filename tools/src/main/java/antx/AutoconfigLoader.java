@@ -80,7 +80,7 @@ public class AutoconfigLoader {
     }
 
     /**
-     * 单个文件转换
+     * 根据没用的配置项，生成一个去掉没用配置项的新autoconfig
      * @param path
      * @throws IOException
      */
@@ -92,12 +92,13 @@ public class AutoconfigLoader {
         if(!parentDir.exists()){
             parentDir.mkdirs();
         }
-        BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(newFile), "UTF-8"));
 
         boolean containKey = false;
 
         //读取文件，每一行放入list中
         List<String> lineList = FileUtil.readAllLines(path);
+
+        BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(newFile), "UTF-8"));
 
         for (String line : lineList) {
             if(line.length()>0){
@@ -133,4 +134,67 @@ public class AutoconfigLoader {
 
     }
 
+
+    /**
+     * 根据没用的generate destfile，生成一个去掉没用配置项的新autoconfig
+     * @param path
+     * @throws IOException
+     */
+    public static void getNewConfigFileByDestfile(String path, List<String> destfileList, boolean removeUnused) throws IOException {
+        File file = new File(path);
+
+        File newFile;
+        if(removeUnused){
+            newFile = file;
+        }else{
+            newFile = new File(file.getAbsolutePath().replace(".xml", "_new.xml"));
+            File parentDir = new File(newFile.getParent());
+            if(!parentDir.exists()){
+                parentDir.mkdirs();
+            }
+        }
+
+        boolean containKey = false;
+
+        //读取文件，每一行放入list中
+        List<String> lineList = FileUtil.readAllLines(path);
+
+        BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(newFile), "UTF-8"));
+
+        for (String line : lineList) {
+            if(line.length()>0){
+
+                for (String key : destfileList) {
+                    //if(line.contains("services.xml")){
+                    //    System.out.println("");
+                    //}
+                    if(line.contains(key) && line.contains("destfile=\"" + key + "\"")){
+
+                        //System.out.println(line + " 包含key :" + key);
+                        containKey = true;
+                        break;
+                    }
+                }
+                if(containKey ){
+                    if(line.endsWith("/>")){
+                        containKey = false;
+                    }
+
+                    //if(removeUnused){
+                    //    continue;
+                    //}
+
+                    line = "<!-- " + line + " -->";
+                }
+            }
+            out.write(line);
+            out.newLine();
+        }
+
+        out.flush();
+        out.close();
+
+        System.out.println("\n生成新的auto-config.xml：" + newFile.getAbsolutePath());
+
+    }
 }

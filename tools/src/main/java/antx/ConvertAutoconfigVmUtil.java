@@ -15,9 +15,18 @@ import util.StringUtil;
  */
 public class ConvertAutoconfigVmUtil {
 
+    /**
+     * 是否先预览，设置true: 生成后的文件后缀不去掉 ".vm", 用于文件比对
+     */
+    public static boolean preview = true;
+
     public static void main(String[] args) throws IOException {
 
+
+        preview = false;
         ConvertAutoconfigVmUtil.batchConvert("/Users/weigangpeng/IdeaProjects/omega/bundle/war/src/webroot/META-INF/autoconf/", "/Users/weigangpeng/IdeaProjects/omega/bundle/war/src/webroot/META-INF/autoconf2/");
+
+        //ConvertAutoconfigVmUtil.batchConvert("/Users/weigangpeng/IdeaProjects/muses_new/banner/bundle/war/src/webroot/META-INF/autoconfbak/", "/Users/weigangpeng/IdeaProjects/muses_new/banner/bundle/war/src/webroot/META-INF/autoconf2/");
     }
 
     /**
@@ -63,12 +72,19 @@ public class ConvertAutoconfigVmUtil {
      * @throws IOException
      */
     public static void convert(File oldFile, String rootPath, String outputPath) throws IOException {
-        if(oldFile.getName().lastIndexOf(".vm") == -1){
-            return;
+        String newFileName;
+        if(oldFile.getName().lastIndexOf(".vm") != -1){
+            //return;
+            newFileName = oldFile.getAbsolutePath().replace(rootPath, outputPath);
+            if(!preview){
+                newFileName = newFileName.replace(".vm", "");
+            }
+        }else{
+            newFileName = oldFile.getAbsolutePath();
         }
 
-
-        File newFile = new File(oldFile.getAbsolutePath().replace(rootPath, outputPath).replace(".vm", ""));
+        //File newFile = new File(oldFile.getAbsolutePath().replace(rootPath, outputPath).replace(".vm", ""));
+        File newFile = new File(newFileName.replace(rootPath, outputPath));
         File parentDir = new File(newFile.getParent());
         if(!parentDir.exists()){
             parentDir.mkdirs();

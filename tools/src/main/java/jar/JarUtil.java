@@ -99,6 +99,13 @@ public class JarUtil {
         return jar;
     }
 
+    public static String getJarPomStrFormStr(String str) {
+        String[] array = str.trim().split(":");
+        Jar jar = new Jar(array[0], array[1], array[2]);
+        return jar.toPomString();
+
+    }
+
     /**
      * 判断字符串中是否有版本信息
      * 判断规则：字符串中有“.”，并且有至少2个数字

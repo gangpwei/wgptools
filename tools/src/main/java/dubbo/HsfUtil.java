@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import dubbo.model.BeanConfig;
 import dubbo.model.ServiceConfig;
 import util.file.FileUtil;
 
@@ -31,12 +32,12 @@ public class HsfUtil {
     public static String generateHsfXmlFile(String filePath, String serviceNamesStr, String version) {
         String[] array = serviceNamesStr.split(";");
         List<String> list = Arrays.asList(array);
-        List<ServiceConfig> serviceConfigList = new ArrayList<>(list.size());
+        List<ServiceConfig> configList = new ArrayList<>(list.size());
         for (String serviceName : list) {
-            serviceConfigList.add(new ServiceConfig(serviceName, version, "5000", "HSF", getBeanName(serviceName)));
+            configList.add(new ServiceConfig(serviceName, version, "5000", "HSF", getBeanName(serviceName)));
         }
 
-        return generateHsfXmlFile(filePath, serviceConfigList);
+        return generateHsfXmlFile(filePath, configList);
     }
 
     /**
@@ -48,6 +49,10 @@ public class HsfUtil {
      */
     public static String generateHsfXmlFile(String filePath, List<ServiceConfig> list) {
 
+        return generateHsfXmlFile(filePath, list, null);
+    }
+
+    public static String generateHsfXmlFile(String filePath, List<ServiceConfig> list, List<BeanConfig> beanList) {
         StringBuilder sb = new StringBuilder();
         String header = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             + "<beans default-autowire=\"byName\"\n"
@@ -57,6 +62,13 @@ public class HsfUtil {
             + "\thttp://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd\">";
 
         sb.append(header);
+        sb.append("\n");
+
+        for (BeanConfig beanConfig : beanList) {
+            sb.append(beanConfig.toXmlString());
+        }
+        sb.append("\n");
+
         for (ServiceConfig serviceConfig : list) {
             sb.append(serviceConfig.toXmlString());
         }

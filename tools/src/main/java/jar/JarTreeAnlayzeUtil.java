@@ -54,6 +54,9 @@ public class JarTreeAnlayzeUtil {
                     int x = 0;
                 }
                 if (line.length() > 0) {
+                    if(line.contains("BUILD FAILURE")){
+                        throw new RuntimeException("maven ±‡“Îπ§≥Ã¥ÌŒÛ£¨«ÎºÏ≤È£∫" + mvnTreeFile);
+                    }
                     if (!line.contains(":jar:") && !line.contains(":war:") && !line.contains(":libd:") && !line.contains(":pom:")) {
                         continue;
                     }

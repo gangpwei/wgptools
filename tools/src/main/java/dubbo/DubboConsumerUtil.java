@@ -3,14 +3,17 @@ package dubbo;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
 import dubbo.model.ConsumerConfig;
 import dubbo.model.MethodConfig;
+import dubbo.model.ServiceConfig;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
+import util.StringUtil;
 import util.file.FileUtil;
 
 /**
@@ -22,7 +25,6 @@ public class DubboConsumerUtil {
 
     public static final String WARP = "\n";
 
-    public static final String DEFAULT_TIMEOUT = "3000";
 
     public static void main(String[] args) throws IOException {
         try {
@@ -30,9 +32,15 @@ public class DubboConsumerUtil {
             getConsumerConfig(new String[] {
 
                 //"/Users/weigangpeng/IdeaProjects/aegean_home/shixi/bundle/war/src/webroot/META-INF/autoconf/platform/biz-dubbo-aegean-client.xml.vm"
-                "/Users/weigangpeng/IdeaProjects/muses_new/banner/bundle/war/src/webroot/META-INF/autoconf/spring/biz-dubbo-client.xml.vm"
+                //"/Users/weigangpeng/IdeaProjects/noah/bundle/war/src/webroot/META-INF/autoconf/platform/biz-crm-member-interface-dubbo-client.xml.vm"
+                "/Users/weigangpeng/IdeaProjects/caesar/bundle/war/src/webroot/META-INF/autoconf/biz-crm-member-interface-dubbo-client.xml.vm"
 
             });
+
+            //String filePath="/Users/weigangpeng/IdeaProjects/aegean_home/trunk/bundle/war/src/resources/platform/biz-contact-client.xml";
+            //String version ="contact_hsf_version";
+            //String serviceNamesStr="com.ali.aurora.biz.contact.ChangeLogBo;com.ali.aurora.biz.contact.ChangeLogFactory;com.ali.aurora.biz.contact.ChangeLogQuery;com.ali.aurora.biz.contact.ContactOperationBo;com.ali.aurora.biz.contact.ContactPermissionService;com.ali.aurora.biz.contact.ContactQueryService;com.ali.aurora.biz.contact.ContactValidatorService;com.ali.aurora.biz.contact.ContactActionService;com.ali.aurora.biz.common.service.SplitNameService;com.ali.aurora.biz.contact.bean.helper.ContactTypeUtils";
+            //generateHsfXmlFile(filePath, serviceNamesStr, version);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -43,6 +51,9 @@ public class DubboConsumerUtil {
         List<ConsumerConfig> result = new ArrayList<>();
         for (String filePath : fileArray) {
             List<ConsumerConfig> list = DubboConsumerUtil.parserConsumerXml(filePath);
+
+            processAnnotation(filePath, list);
+
             result.addAll(list);
 
             //System.out.println(filePath + " size: " + list.size());
@@ -57,6 +68,23 @@ public class DubboConsumerUtil {
         return result;
     }
 
+    /**
+     * 生成HSF配置
+     *
+     * @param filePath
+     * @param serviceNamesStr 接口名字符串，可以是多个，“;”分隔
+     * @return
+     */
+    public static String generateHsfXmlFile(String filePath, String serviceNamesStr, String version) {
+        String[] array = serviceNamesStr.split(";");
+        List<String> list = Arrays.asList(array);
+        List<ConsumerConfig> configList = new ArrayList<>(list.size());
+        for (String serviceName : list) {
+            configList.add(new ConsumerConfig(serviceName, version, "5000",  "HSF", HsfUtil.getBeanName(serviceName)));
+        }
+
+        return generateHsfXmlFile(filePath, configList);
+    }
 
     /**
      * 将xml配置转为字符串
@@ -64,7 +92,7 @@ public class DubboConsumerUtil {
      * @param list
      * @return
      */
-    private static String generateHsfXmlFile(String filePath, List<ConsumerConfig> list) {
+    public static String generateHsfXmlFile(String filePath, List<ConsumerConfig> list) {
 
         StringBuilder sb = new StringBuilder();
         String header = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -73,11 +101,11 @@ public class DubboConsumerUtil {
             + "\txmlns:aop=\"http://www.springframework.org/schema/aop\" xmlns:context=\"http://www.springframework.org/schema/context\"\n"
             + "\txsi:schemaLocation=\"http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd\n"
             + "\thttp://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd\n"
-            + "\thttp://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd\">";
+            + "\thttp://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd\">\n";
 
         sb.append(header);
-        for (ConsumerConfig serviceConfig : list) {
-            sb.append(beanItemToXmlString(serviceConfig));
+        for (ConsumerConfig config : list) {
+            sb.append(config.toXmlString());
         }
         sb.append("</beans>");
 
@@ -113,10 +141,49 @@ public class DubboConsumerUtil {
                 }
 
             }
+
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
         return result;
+    }
+
+    /**
+     * 处理注释
+     * @param fileName
+     * @param beanList
+     */
+    public static void processAnnotation(String fileName, List<ConsumerConfig> beanList) {
+        List<String> allLine = FileUtil.readAllLines(fileName);
+        for (ConsumerConfig config : beanList) {
+            for (int i = 0; i < allLine.size(); i++) {
+                String line = allLine.get(i);
+                if("orderStatusService".equals(config.getId())){
+                    System.out.println();
+                }
+                String idExpress = "id=\"" + config.getId() + "\"";
+                if(StringUtil.isNotEmpty(line) && line.contains(idExpress)){
+                    int lastLineIndex = i - 1;
+                    String lastLineStr = allLine.get(lastLineIndex);
+                    if(isAnnotation(lastLineStr)){
+                        config.setAnnotation(lastLineStr);
+                    }
+                }
+
+            }
+        }
+    }
+
+    /**
+     * 是否是注释
+     * @param str
+     * @return
+     */
+    public static boolean isAnnotation(String str) {
+        if(StringUtil.isNotEmpty(str) && str.contains("<!--") && str.contains(">")){
+            return true;
+        }
+        return false;
     }
 
     private static ConsumerConfig toConsumerConfig(Element node) {
@@ -126,7 +193,7 @@ public class DubboConsumerUtil {
         if(config.getId().equals("customerBlackListService")){
             System.out.println();
         }
-        config.setVersion(getValue(node.attributeValue("version")));
+        config.setVersion(node.attributeValue("version"));
         if(node.attributeValue("timeout") != null){
             config.setTimeout(getValue(node.attributeValue("timeout")));
         }
@@ -164,51 +231,8 @@ public class DubboConsumerUtil {
         return source.trim().replaceAll("\\$","").replaceAll("\\{","").replaceAll("\\}","");
     }
 
-    public static String beanItemToXmlString(ConsumerConfig config){
-        StringBuilder sb = new StringBuilder();
-        String className;
-        if(config.getRetries() != null){
-            className = "com.taobao.hsf.app.api.util.HSFApiConsumerBean";
-        }else{
-            className = "com.taobao.hsf.app.spring.util.HSFSpringConsumerBean";
-        }
-        className = "com.taobao.hsf.app.spring.util.HSFSpringConsumerBean";
 
-        sb.append(WARP).append("    <bean name=\"").append(config.getId()).append("\" class=\"" + className + "\" init-method=\"init\">");
-        sb.append(WARP).append("        <property name=\"interfaceName\" value=\"").append(config.getInterfaceName()).append("\" />");
-        sb.append(WARP).append("        <property name=\"version\" value=\"").append(getConfigValue(config.getVersion())).append("\" />");
-        sb.append(WARP).append("        <property name=\"group\" value=\"DUBBO\" />");
-        String timeout = DEFAULT_TIMEOUT;
-        if(config.getTimeout() != null){
-            timeout = config.getTimeout();
-        }
-        sb.append(WARP).append("        <property name=\"clientTimeout\" value=\"").append(getConfigValue(timeout)).append("\" />");
-        if(config.getRetries() != null){
-            //sb.append(WARP).append("        <property name=\"retries\" value=\"").append(getConfigValue(config.getRetries())).append("\" />");
-        }
-        if(config.getMethods() != null && config.getMethods().size()>0){
-            sb.append(WARP).append("        <property name=\"methodSpecials\">");
-            sb.append(WARP).append("            <list>");
-            for (MethodConfig methodConfig : config.getMethods()) {
-                sb.append(WARP).append("                <bean class=\"com.taobao.hsf.model.metadata.MethodSpecial\">");
-                sb.append(WARP).append("                    <property name=\"methodName\" value=\"").append(methodConfig.getName()).append("\" />");
-                sb.append(WARP).append("                    <property name=\"clientTimeout\" value=\"").append(getConfigValue(methodConfig.getTimeout())).append("\" />");
-                sb.append(WARP).append("                </bean>");
 
-            }
-            sb.append(WARP).append("            </list>");
-            sb.append(WARP).append("        </property>");
-        }
-        sb.append(WARP).append("    </bean>");
-        sb.append(WARP);
-        return sb.toString();
-    }
 
-    public static String getConfigValue(String source){
-        if(source.contains("_")){
-            return "${" + source + "}";
-        }
-        return source;
-    }
 
 }

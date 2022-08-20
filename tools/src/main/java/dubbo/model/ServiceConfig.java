@@ -6,6 +6,7 @@ public class ServiceConfig {
     private String timeout;
     private String group;
     private String target;
+    private String annotation;
 
     public String getInterfaceName() {
         return interfaceName;
@@ -78,10 +79,13 @@ public class ServiceConfig {
 
     public  String toXmlString(){
         StringBuilder sb = new StringBuilder();
+        if(annotation != null){
+            sb.append(WARP).append(annotation);
+        }
         sb.append(WARP).append("    <bean class=\"com.taobao.hsf.app.spring.util.HSFSpringProviderBean\" init-method=\"init\">");
         sb.append(WARP).append("        <property name=\"serviceInterface\" value=\"").append(getInterfaceName()).append("\" />");
         sb.append(WARP).append("        <property name=\"serviceVersion\" value=\"").append(getConfigValue(getVersion())).append("\" />");
-        sb.append(WARP).append("        <property name=\"target\" ref=\"").append(getConfigValue(getTarget())).append("\" />");
+        sb.append(WARP).append("        <property name=\"target\" ref=\"").append(getTarget()).append("\" />");
         sb.append(WARP).append("        <property name=\"serviceGroup\" value=\"").append(getConfigValue(getGroup())).append("\" />");
         if(getTimeout() != null){
             sb.append(WARP).append("        <property name=\"clientTimeout\" value=\"").append(getConfigValue(getTimeout())).append("\" />");
@@ -92,9 +96,17 @@ public class ServiceConfig {
     }
 
     public static String getConfigValue(String source){
-        if(source.contains("_")){
-            return "${" + source + "}";
-        }
+        //if(source.contains("_")){
+        //    return "${" + source + "}";
+        //}
         return source;
+    }
+
+    public String getAnnotation() {
+        return annotation;
+    }
+
+    public void setAnnotation(String annotation) {
+        this.annotation = annotation;
     }
 }

@@ -39,7 +39,7 @@ public class JarAddExcludeUtil {
         //codePath = "/Users/weigangpeng/IdeaProjects/aegean_home/shixi/biz/aegean-citypartner/";
         //codePath = "/Users/weigangpeng/IdeaProjects/aegean_home/shixi/biz/platform/";
 
-        codePath = "/Users/weigangpeng/IdeaProjects/aegean_home/shixi/bundle/war/";
+        //codePath = "/Users/weigangpeng/IdeaProjects/aegean_home/shixi/bundle/war/";
 
         //codePath = "/Users/weigangpeng/IdeaProjects/git/aegean-adapter/";
 

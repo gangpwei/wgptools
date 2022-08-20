@@ -50,6 +50,10 @@
             <version>4.12</version>
             <scope>test</scope>
         </dependency>
-
+        <dependency>
+            <groupId>com.taobao.diamond</groupId>
+            <artifactId>diamond-client</artifactId>
+            <version>3.7.8</version>
+        </dependency>
     </dependencies>
 </project>

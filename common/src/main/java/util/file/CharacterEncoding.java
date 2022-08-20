@@ -53,10 +53,13 @@ public class CharacterEncoding {
 
 
         //特殊处理，工具识别不准确，如果是ASCII，替换成GBK
-        if("EUC-KR".equals(fileCharacterEnding)){
+        if("EUC-KR".equals(fileCharacterEnding) ){
             return "GBK";
         }
 
+        if("void".equals(fileCharacterEnding)){
+            return "UTF-8";
+        }
         return fileCharacterEnding;  
     }  
 }  

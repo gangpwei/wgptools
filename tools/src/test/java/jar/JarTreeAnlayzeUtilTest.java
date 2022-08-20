@@ -11,14 +11,14 @@ public class JarTreeAnlayzeUtilTest {
     @org.junit.Test
     public void getUnusedJars() throws Exception {
         List<String> unusedJars = JarAnlayzeUtil.getUnusedJarNames(
-            "/Users/weigangpeng/IdeaProjects/muses_new/banner/bundle/war/target/muses.war/WEB-INF/lib",
-            "/Users/weigangpeng/Documents/开发提效/muses_jar.log");
+            "/Users/weigangpeng/IdeaProjects/noah/bundle/war/target/noah.war/WEB-INF/lib",
+            "/Users/weigangpeng/Documents/开发提效/noahlog");
 
-        List<Jar> jars = JarTreeAnlayzeUtil.getJarDependencyTree("/Users/weigangpeng/Documents/开发提效/mavntree.log");
+        //List<Jar> jars = JarTreeAnlayzeUtil.getJarDependencyTree("/Users/weigangpeng/Documents/开发提效/mavntree.log");
         //for (Jar jar : jars) {
         //    System.out.println(jar.toLevelString());
         //}
 
-        JarTreeAnlayzeUtil.generateExcludePom(unusedJars, jars);
+        //JarTreeAnlayzeUtil.generateExcludePom(unusedJars, jars);
     }
 }

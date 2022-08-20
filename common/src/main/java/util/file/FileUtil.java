@@ -28,6 +28,7 @@ public class FileUtil {
 
     /**
      * 文件转行
+     *
      * @param filePath
      * @return
      */
@@ -42,7 +43,7 @@ public class FileUtil {
         String fileEncode = "UTF-8";
         try {
             //fileEncode = FileCharsetDetector.guessFileEncoding(filePath);
-            fileEncode =CharacterEncoding.getFileCharacterEnding(filePath);
+            fileEncode = CharacterEncoding.getFileCharacterEnding(filePath);
         } catch (Exception e) {
             log.error("获取文件编码失败， file = " + filePath, e);
         }
@@ -50,20 +51,29 @@ public class FileUtil {
         //log.info("filePath: " + filePath + ", encoding: " + fileEncode );
 
         try {
-            lines = Files.readAllLines(Paths.get(filePath),  Charset.forName(fileEncode));
+            lines = Files.readAllLines(Paths.get(filePath), Charset.forName(fileEncode));
         } catch (Exception e) {
-            log.error("文件读取所有行异常：filePath: " + filePath + ", encoding: " + fileEncode , e);
+            if ("GB2312".equals(fileEncode) || "Big5".equals(fileEncode)) {
+                try {
+                    lines = Files.readAllLines(Paths.get(filePath), Charset.forName("GBK"));
+                } catch (Exception e1) {
+                    log.error("文件读取所有行异常：filePath: " + filePath + ", encoding: " + fileEncode, e1);
+                }
+            } else {
+                log.error("文件读取所有行异常：filePath: " + filePath + ", encoding: " + fileEncode, e);
+            }
         }
         return lines;
     }
 
     /**
      * 把字符串写到文件中
+     *
      * @param file
      * @param content
      * @return
      */
-    public static boolean writeFile(String file, String content){
+    public static boolean writeFile(String file, String content) {
         String fileEncode = "UTF-8";
         writeFile(file, content, fileEncode);
         return true;
@@ -71,15 +81,16 @@ public class FileUtil {
 
     /**
      * 把字符串写到文件中
+     *
      * @param file
      * @param content
      * @return
      */
-    public static boolean writeFile(String file, String content, String charSet){
+    public static boolean writeFile(String file, String content, String charSet) {
         try {
-            Files.write(Paths.get(file),content.getBytes(charSet), StandardOpenOption.CREATE);
+            Files.write(Paths.get(file), content.getBytes(charSet), StandardOpenOption.CREATE);
         } catch (Exception e) {
-            log.error("写文件异常：" + file , e);
+            log.error("写文件异常：" + file, e);
             return false;
         }
         return true;
@@ -87,27 +98,37 @@ public class FileUtil {
 
     /**
      * 把字符串写到文件中
+     *
      * @param file
      * @param lines
      * @return
      */
-    public static boolean writeFile(String file, List<String> lines){
+    public static boolean writeFile(String file, List<String> lines) {
         try {
             Files.write(Paths.get(file), lines, StandardOpenOption.CREATE);
         } catch (Exception e) {
-            log.error("写文件异常：" + file , e);
+            log.error("写文件异常：" + file, e);
             return false;
         }
         return true;
     }
 
-    public static boolean copyFile(String oldFile, String newFile, FileLineReplacer fileLineReplacer){
+    public static boolean writeFileGBK(String file, List<String> lines) {
+        try {
+            Files.write(Paths.get(file), lines, Charset.forName("GBK"), StandardOpenOption.CREATE);
+        } catch (Exception e) {
+            log.error("写文件异常：" + file, e);
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean copyFile(String oldFile, String newFile, FileLineReplacer fileLineReplacer) {
         File file = new File(oldFile);
         if (!file.exists()) {
             log.error("文件不存在：" + oldFile);
             return false;
         }
-
 
         List<String> lines = readAllLines(oldFile);
 
@@ -116,12 +137,12 @@ public class FileUtil {
         for (String line : lines) {
             x += 1;
             String newLine = fileLineReplacer.filter(line);
-            if(newLine == null){
+            if (newLine == null) {
                 continue;
             }
             buffer.append(newLine);
 
-            if(x < lines.size()){
+            if (x < lines.size()) {
                 buffer.append("\n");
             }
         }
@@ -156,6 +177,7 @@ public class FileUtil {
 
     /**
      * 删除文件夹
+     *
      * @param folderPath
      */
     public static void delFolder(String folderPath) {
@@ -174,6 +196,7 @@ public class FileUtil {
 
     /**
      * 删除指定文件夹下所有文件
+     *
      * @param path
      * @return
      */
@@ -233,7 +256,7 @@ public class FileUtil {
                     fs.write(buffer, 0, byteread);
                 }
                 inStream.close();
-            }else{
+            } else {
                 log.error("文件不存在：" + oldPath);
                 return false;
             }

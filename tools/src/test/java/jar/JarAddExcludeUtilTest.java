@@ -23,6 +23,17 @@ public class JarAddExcludeUtilTest {
     }
 
     @Test
+    public void processForNoah() throws Exception {
+
+        String codePath = "/Users/weigangpeng/IdeaProjects/noah/";
+        String warPath = "/bundle/war/target/noah.war";
+        //String usedJarFile = "/Users/weigangpeng/Documents/开发提效/aegean_jar.log";
+        String usedJarFile = "/Users/weigangpeng/Documents/开发提效/noahlog";
+
+        JarAddExcludeUtil.process(codePath, warPath, usedJarFile);
+    }
+
+    @Test
     public void addDependencyForRemovedByMistakeJarForAegean() throws Exception {
         JarAddExcludeUtil.addDependencyForRemovedByMistakeJar(
             "/Users/weigangpeng/IdeaProjects/aegean_home/shixi/bundle/war/target/aegean.war/WEB-INF/lib",

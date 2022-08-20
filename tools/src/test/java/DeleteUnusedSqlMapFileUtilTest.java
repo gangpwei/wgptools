@@ -14,10 +14,10 @@ public class DeleteUnusedSqlMapFileUtilTest {
 
         //usedFileSet = getUsedFileList(new String[] {"sqlmap-config.xml", "sqlmap-config-citypartner.xml", "sqlmap-config-leads.xml", "sqlmap-config-message.xml", "sqlmap-config-muses.xml", "sqlmap-config-mysql-aegean.xml", "sqlmap-config-zeus.xml"});
 
-        String warSrcPath = "/Users/weigangpeng/IdeaProjects/omega/bundle/war/src/java/";
+        String warSrcPath = "/Users/weigangpeng/IdeaProjects/noah/bundle/war/src/java/";
 
         String sqlMapBase = warSrcPath + "sqlmap/";
-        String[] fileArray =  new String[] {"sqlmap-config.xml", "sqlmap-config-mysql.xml", "sqlmap-config-alike.xml"};
+        String[] fileArray =  new String[] {"sqlmap-config.xml", "sqlmap-config-mysql.xml", "sqlmap-config-nir.xml", "sqlmap-config-zeus.xml"};
         DeleteUnusedSqlMapFileUtil.process(warSrcPath, sqlMapBase, fileArray, true);
     }
 

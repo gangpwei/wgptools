@@ -13,6 +13,16 @@ public class GenerateConf {
 
     private String charset;
 
+    private boolean isUsed = false;
+
+    public boolean isUsed() {
+        return isUsed;
+    }
+
+    public void setUsed(boolean used) {
+        isUsed = used;
+    }
+
     public String getTempalte() {
         return tempalte;
     }
@@ -35,5 +45,15 @@ public class GenerateConf {
 
     public void setCharset(String charset) {
         this.charset = charset;
+    }
+
+    @Override
+    public String toString() {
+        final StringBuffer sb = new StringBuffer("GenerateConf{");
+        sb.append("tempalte='").append(tempalte).append('\'');
+        sb.append(", destfile='").append(destfile).append('\'');
+        sb.append(", charset='").append(charset).append('\'');
+        sb.append('}');
+        return sb.toString();
     }
 }
