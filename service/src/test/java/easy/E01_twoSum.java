@@ -22,6 +22,7 @@ public class E01_twoSum {
      * @return
      */
     public int[] twoSum0(int[] nums, int target) {
+        //key: 数的值，value: 数组中的下标
         Map<Integer, Integer> map = new HashMap<>();
 
         for (int i = 0; i < nums.length; i++) {
@@ -32,7 +33,6 @@ public class E01_twoSum {
             map.put(nums[i], i);
         }
         return new int[0];
-
     }
 
 

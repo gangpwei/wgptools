@@ -1,7 +1,8 @@
-package easy;
+package easy.tree;
 
 import org.junit.Assert;
 import org.junit.Test;
+import util.TreeNode;
 
 /**
  * 判断它是否是高度平衡的二叉树

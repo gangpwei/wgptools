@@ -1,3 +1,5 @@
+package easy.listnode;
+
 import easy.ListNode;
 import org.junit.Test;
 

@@ -1,8 +1,9 @@
-package easy;
+package easy.tree;
 
 import org.junit.Test;
+import util.TreeNode;
 
- /**
+/**
   * ÅĞ¶Ï2¿ÃÊ÷ÊÇ·ñÏàÍ¬
   * @author gangpeng.wgp
   * @date 2022/5/30 10:21 PM

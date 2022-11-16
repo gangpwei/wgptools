@@ -1,8 +1,5 @@
 package easy;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.junit.Test;
 
 import static junit.framework.TestCase.assertFalse;
@@ -20,6 +17,8 @@ public class CheckPermutation {
         }
         int[] arr1 = new int[26];
         int[] arr2 = new int[26];
+        //背景知识：小写字母转数字，char 的值 减 'a' 可得到 0 ~ 25的数字
+        //对应字母位置出现次数加一
         for (int i = 0; i < s1.length(); i++) {
             arr1[s1.charAt(i) - 'a'] += 1;
             arr2[s2.charAt(i) - 'a'] += 1;

@@ -1,12 +1,11 @@
-package easy;
+package easy.tree;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.Assert;
 import org.junit.Test;
+import util.TreeNode;
 
 /**
  * 判断它是否是高度平衡的二叉树

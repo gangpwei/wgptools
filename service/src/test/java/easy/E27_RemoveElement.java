@@ -21,7 +21,6 @@ public class E27_RemoveElement {
                 nums[j] = nums[i];
                 j++;
             }
-
         }
         return j;
     }
